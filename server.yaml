@@ -1,0 +1,361 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CET-005 Servers Template
+
+Parameters:
+
+  EnvironmentName:
+      Description: An environment name that will be prefixed to resource names
+      Type: String
+
+  InstanceType:
+      Description: EC2 Instance Type
+      Type: String
+      AllowedValues: [t2.nano, t2.micro, t2.small, t2.medium, t2.large]
+      ConstraintDescription: must be a valid EC2 instance type.
+
+  LatestAmiId:
+    Type:  'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+
+  SSHKeypair: 
+    Description: Amazon EC2 Key Pair
+    Type: "AWS::EC2::KeyPair::KeyName"
+
+  BastionHostIP:
+    Type: String
+
+
+Resources:
+
+#####################################
+# WebServers for each puplic subnet #
+#####################################
+
+  WebInstance1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeypair
+      SecurityGroupIds:
+        - !GetAtt PublicInstanceSG.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} PublicWebSever1
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-PublicSubnet1
+
+      IamInstanceProfile: !Ref InstanceProfile
+
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd.x86_64
+            systemctl start httpd.service
+            systemctl enable httpd.service
+            cd /var/www/html
+            aws s3 cp s3://mfaragcet005/index.html .
+
+  WebInstance2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeypair
+      SecurityGroupIds:
+        - !GetAtt PublicInstanceSG.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} PublicWebSever2
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-PublicSubnet2
+  
+      IamInstanceProfile: !Ref InstanceProfile
+
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd.x86_64
+            systemctl start httpd.service
+            systemctl enable httpd.service
+            cd /var/www/html
+            aws s3 cp s3://mfaragcet005/index.html .
+
+# ###############################################
+# # Internal WebServers for each Private subnet #
+# ###############################################
+
+  InternalWebInstance1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeypair
+      SecurityGroupIds:
+        - !GetAtt PrivateInstanceSG.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} InternalWebSever1
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-PrivateSubnet1
+      
+      IamInstanceProfile: !Ref InstanceProfile
+
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd.x86_64
+            systemctl start httpd.service
+            systemctl enable httpd.service
+            cd /var/www/html
+            aws s3 cp s3://mfaragcet005/index.html .
+    
+  InternalWebInstance2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeypair
+      SecurityGroupIds:
+        - !GetAtt PrivateInstanceSG.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} InternalWebSever2
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-PrivateSubnet2
+      
+      IamInstanceProfile: !Ref InstanceProfile
+
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd.x86_64
+            systemctl start httpd.service
+            systemctl enable httpd.service
+            cd /var/www/html
+            aws s3 cp s3://mfaragcet005/index.html .
+
+# #########################
+# # Bastion Host Instance #
+# #########################
+
+  BastionInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeypair
+      SecurityGroupIds:
+        - !GetAtt BastionInstanceSG.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} BastionHost
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-PublicSubnet1
+
+# ##################################
+# # Public Instance security group #
+# ##################################
+
+  PublicInstanceSG:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        GroupDescription: Allow HTTP from everywhere, and SSH from VPC CIDR
+        VpcId:
+          Fn::ImportValue:
+            !Sub ${EnvironmentName}-VPC
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp:
+            Fn::ImportValue:
+              !Sub ${EnvironmentName}-VPC-CIDR
+        Tags:
+          - Key: Name
+            Value: !Sub ${EnvironmentName}-PublicInstanceSG
+          - Key: CreatedBy
+            Value: mohamed.farag@rackspace.com
+
+# ###################################
+# # Private Instance security group #
+# ###################################
+
+  PrivateInstanceSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Allow HTTP, and SSH from VPC CIDR
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp:
+          Fn::ImportValue:
+            !Sub ${EnvironmentName}-VPC-CIDR
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp:
+          Fn::ImportValue:
+            !Sub ${EnvironmentName}-VPC-CIDR
+      
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-PrivateInstanceSG
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+
+# ###################################
+# # Bastion Instance security group #
+# ###################################
+
+  BastionInstanceSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Allow ssh from specific IP
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${EnvironmentName}-VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref BastionHostIP        
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-BastionInstanceSG
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+
+        
+# ###############################################
+# # Instance Profile, Instance Role, and Policy #
+# ###############################################
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      InstanceProfileName: InstanceProfile
+      Path: /
+      Roles: 
+      - !Ref Ec2InstanceRole
+
+  Ec2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ec2-instance-role
+      Tags:
+        - Key: CreatedBy
+          Value: mohamed.farag@rackspace.com
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+
+  InstanceS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3Policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:ListBucket'
+            Resource: 'arn:aws:s3:::mfaragcet005/*'
+      Roles:
+        - !Ref Ec2InstanceRole
+
+# ##########
+# # Output #
+# ##########
+
+Outputs: 
+
+######################
+# Webserver 1 ouputs #
+######################
+
+  PublicWebInstance1PrivateIP:
+    Description: Private IP of the Public Web Server 1
+    Value: !GetAtt WebInstance1.PrivateIp
+
+  WebServer1PuplicIP:
+    Description: Public IP of the Web Server 1
+    Value: !Join [ "", [ 'http://', !GetAtt  WebInstance1.PublicIp, ":80" ]]
+
+######################
+# Webserver 2 ouputs #
+######################
+
+  PublicWebInstance2PrivateIP:
+    Description: Private IP of the Public Web Server 2
+    Value: !GetAtt WebInstance2.PrivateIp
+
+  WebServer2PuplicIP:
+    Description: Public IP of the Web Server 2
+    Value: !Join [ "", [ 'http://', !GetAtt  WebInstance2.PublicIp, ":80" ]]
+
+################################
+# Internal Web Server 1 ouputs #
+################################
+
+  InternalWebInstance1PrivateIP:
+    Description: Private IP of the Internal Web Server 2
+    Value: !GetAtt InternalWebInstance1.PrivateIp
+
+################################
+# Internal Web Server 2 ouputs #
+################################
+
+  InternalWebInstance2PrivateIP:
+    Description: Private IP of the Internal Web Server 2
+    Value: !GetAtt InternalWebInstance2.PrivateIp
+
+######################
+# Bastion Host Ouput #
+######################
+
+  BastionHostPublicIP:
+    Description: Private IP of the Internal Web Server 2
+    Value: !GetAtt BastionInstance.PublicIp

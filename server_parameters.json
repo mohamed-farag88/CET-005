@@ -1,0 +1,22 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "cet005"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t2.micro"
+    },
+    {
+        "ParameterKey": "LatestAmiId",
+        "ParameterValue": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    },
+    {
+        "ParameterKey": "SSHKeypair",
+        "ParameterValue": "mohamed-farag"
+    },
+    {
+        "ParameterKey": "BastionHostIP",
+        "ParameterValue": "41.239.88.212/32"
+    }
+  ]
