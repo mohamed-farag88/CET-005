@@ -36,7 +36,7 @@ We have two CloudFormation templates that creates the following resources:
 
 
 
-> Both CFN templates and can performthe following scenarios:
+> Both CFN templates and can perform the following scenarios:
 >  1. SSH to Bastion host.
 >  2. Access public Web servers from browsers using public IP.
 >  3. Access private Web servers from the bastion host.
