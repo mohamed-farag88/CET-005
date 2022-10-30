@@ -98,7 +98,7 @@ Example:
 
 ## Access servers from the bastion host
 
-1- Download you pem file.
+1- Download your pem file.
 
 2- Set ssh config file as shown below:
 
