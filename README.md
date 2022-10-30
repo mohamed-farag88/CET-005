@@ -63,7 +63,7 @@ For [network_parameters.json], and [server_parameters.json] we have the below pa
 
 
 
-## Scripts
+## [Scripts]
 
 ### To craete stack use [create_stack] shell script as shown:
 
@@ -124,4 +124,6 @@ MIT
    [update_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/delete_stack.sh>
 
    [delete_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/update_stack.sh>
+   
+   [Scripts]: <https://github.com/mohamed-farag88/CET-005/tree/main/scripts>
 
