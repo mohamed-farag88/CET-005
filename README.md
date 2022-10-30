@@ -61,9 +61,7 @@ For [network_parameters.json], and [server_parameters.json] we have the below pa
 | SSHKeypair | Amazon EC2 Key Pair |  |  |
 | BastionHostIP | Bastion allowed IP | String |  |
 
-This text you see here is *actually- written in Markdown! To get a feel
-for Markdown's syntax, type some text into the left window and
-watch the results in the right.
+
 
 ## Scripts
 
