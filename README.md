@@ -113,13 +113,13 @@ MIT
 
 
 
-   [network.yaml]: <https://github.com/mohamed-farag88/Deploy_High_-Availability_WebApp_Using_Cloudformation/blob/main/network.yaml>
+   [network.yaml]: <https://github.com/mohamed-farag88/CET-005/blob/main/network.yaml>
 
-   [network_parameters.json]: <https://github.com/mohamed-farag88/Deploy_High_-Availability_WebApp_Using_Cloudformation/blob/main/network_parameters.json>
+   [network_parameters.json]: <https://github.com/mohamed-farag88/CET-005/blob/main/network_parameters.json>
 
-   [server.yaml]: <https://github.com/mohamed-farag88/Deploy_High_-Availability_WebApp_Using_Cloudformation/blob/main/server.yaml>
+   [server.yaml]: <https://github.com/mohamed-farag88/CET-005/blob/main/server.yaml>
 
-   [server_parameters.json]: <https://github.com/mohamed-farag88/Deploy_High_-Availability_WebApp_Using_Cloudformation/blob/main/server_parameters.json>
+   [server_parameters.json]: <https://github.com/mohamed-farag88/CET-005/blob/main/server_parameters.json>
 
    [create_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/create_stack.sh>
 
