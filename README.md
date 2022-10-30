@@ -135,7 +135,7 @@ Example:
 
 ## Hints
 
-IF you do not need to edit the config file check this [Instructions]
+IF you do not need to edit the ssh config file check this [Instructions]
 
 For Putty client click [here]
 
