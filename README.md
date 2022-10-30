@@ -96,17 +96,45 @@ Example:
 ```
 
 
-## Installation
+## Access servers from the bastion host
+
+1- Download you pem file.
+
+2- Set ssh config file as shown below:
+
+        vi ~/.ssh/config
+        Host bastionhost
+            Hostname (EC2 Public IPv4 DNS or Public IPv4 address) 
+            User ec2-user
+            IdentityFile  ~/path/to/the/myfile.pem
+        Host 10.40.*
+            IdentityFile  ~/path/to/the/myfile.pem
+            User ec2-user
+            ProxyCommand ssh -W %h:%p  ec2-user@bastionhost
+
+
+>ProxyCommand ssh -W %h %p : Specifies the command to use to connect to the server forwarded.In this example, Any occurrence of %h will be substituted by the host name to connect, %p by the port.
+
+>Your Laptop then connects through the (-W )tunnel and reaches the target server
+
+>The ProxyCommand then tells the system to first ssh to our bastion host and open a connection to host %h (hostname supplied to ssh) on port %p (port supplied to ssh).
+
+>To make generic for all hosts in private subnet we set the second block to all subnets "10.40.*"
+
+3- SSH to Bastion host
+
+    ssh bastionhost
+
+4- SSH to Server hosts
+
+    ssh <server private IP>
+    EX.
+    ssh 10.40.10.121
+
+>The ProxyCommand then tells the system to first ssh to our bastion host and open a connection to host %h (hostname supplied to ssh) on port %p (port supplied to ssh).
 
 
 
-
-
-
-
-## License
-
-MIT
 
 
 
@@ -119,11 +147,11 @@ MIT
 
    [server_parameters.json]: <https://github.com/mohamed-farag88/CET-005/blob/main/server_parameters.json>
 
+   [Scripts]: <https://github.com/mohamed-farag88/CET-005/tree/main/scripts>
+
    [create_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/create_stack.sh>
 
    [update_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/delete_stack.sh>
 
    [delete_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/update_stack.sh>
-   
-   [Scripts]: <https://github.com/mohamed-farag88/CET-005/tree/main/scripts>
 
