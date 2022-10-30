@@ -133,6 +133,11 @@ Example:
 
 >The ProxyCommand then tells the system to first ssh to our bastion host and open a connection to host %h (hostname supplied to ssh) on port %p (port supplied to ssh).
 
+## Hints
+
+IF you do not need to edit the config file check this [Instructions]
+
+For Putty client click [here]
 
 
 
@@ -154,4 +159,8 @@ Example:
    [update_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/delete_stack.sh>
 
    [delete_stack]: <https://github.com/mohamed-farag88/CET-005/blob/main/scripts/update_stack.sh>
+
+   [Instructions]: <https://myopswork.com/transparent-ssh-tunnel-through-a-bastion-host-d1d864ddb9ae>
+
+   [here]: <https://medium.com/faun/aws-setup-bastion-host-ssh-tunnel-f5ec5cf10524>
 
