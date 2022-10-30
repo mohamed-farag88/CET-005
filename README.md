@@ -2,7 +2,7 @@
 
 ### Architecture:
 
-![Architecture](https://github.com/mohamed-farag88/Deploy_High_-Availability_WebApp_Using_Cloudformation/blob/72f20275d992bcccf0ebf4895ebaeab97fcf2cf6/Web%20APP%20Architecture.jpeg)
+![Architecture](https://github.com/mohamed-farag88/CET-005/blob/main/CET-005.jpeg)
 
 ## CloudFormation Templates
 
